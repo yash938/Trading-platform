@@ -1,4 +1,4 @@
-package com.tradingplatform.entity;
+package com.tradingplatform.dto;
 
 import com.tradingplatform.domain.VerificationType;
 import jakarta.persistence.Entity;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class TwoFactorAuth {
 
     private boolean isEnabled = false;

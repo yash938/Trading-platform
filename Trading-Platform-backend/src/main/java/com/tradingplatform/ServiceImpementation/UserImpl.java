@@ -72,8 +72,7 @@ public class UserImpl implements UserService {
 
     @Override
     public User getByEmail(String email) {
-        UserDto userEmail = userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFound("user is not found with given email"));
-        User user = modelMapper.map(userEmail, User.class);
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFound("user is not found"));
         return user;
     }
 }

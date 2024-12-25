@@ -1,14 +1,21 @@
 package com.tradingplatform.controller;
 
+import com.tradingplatform.domain.VerificationType;
 import com.tradingplatform.dto.HandlerDto;
 import com.tradingplatform.dto.PageResponse;
 import com.tradingplatform.dto.UserDto;
 import com.tradingplatform.entity.User;
+import com.tradingplatform.entity.VerificationCode;
+import com.tradingplatform.service.EmailService;
 import com.tradingplatform.service.UserService;
+import com.tradingplatform.service.VerificationService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,6 +26,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private VerificationService verificationService;
+
+    @Autowired
+    private EmailService emailService;
 
   @PostMapping("/signup")
     public ResponseEntity<UserDto> signupUser(@RequestBody UserDto userDto){
@@ -53,4 +66,42 @@ public class UserController {
       HandlerDto userIsDeleted = HandlerDto.builder().message("User is deleted").status(HttpStatus.OK).success(true).date(LocalDate.now()).build();
       return new ResponseEntity<>(userIsDeleted,HttpStatus.OK);
   }
+
+    @PostMapping("/verificationType/{verificationType}/send-otp}")
+    public ResponseEntity<String> sendVerificationType(@PathVariable VerificationType verificationType) throws MessagingException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        ////////////////////////////////////////////////////
+        VerificationCode verificationByUser = verificationService.getVerificationByUser(user.getId());
+        if(verificationByUser != null){
+            verificationByUser= verificationService.sendVerificationCode(user, verificationType);
+        }
+
+        if(verificationType.equals(VerificationType.EMAIL)){
+            emailService.sendVerification(user.getEmail(),verificationByUser.getOtp());
+        }
+
+
+        return new ResponseEntity<>("Otp Successfully send",HttpStatus.OK);
+    }
+  @PutMapping("/enable-two-factor/verify-otp/{otp}")
+  public ResponseEntity<User> twoFactorAuth(@PathVariable String otp) throws Exception {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      User user = (User) authentication.getPrincipal();
+
+      VerificationCode verificationCode = verificationService.getVerificationByUser(user.getId());
+      String sendTo = verificationCode.getVerificationType().equals(VerificationType.EMAIL) ? verificationCode.getEmail() : verificationCode.getMobile();
+      boolean isVarified = verificationCode.getOtp().equals(otp);
+
+      if(isVarified){
+          User updateUsers = userService.enableTwoFactorAuth(verificationCode.getVerificationType(), sendTo, user);
+          verificationService.verificationCodeDelete(verificationCode.getId());
+          return new ResponseEntity<>(updateUsers,HttpStatus.OK);
+      }
+
+
+      throw new Exception("Wrong otp");
+  }
+
+
 }

@@ -13,4 +13,7 @@ public class JwtResponse {
     private String token;
     UserDto user;
     private RefreshTokenDto refreshTokenDto;
+    private String message;
+    private boolean twoFactorAuthIsEnabled;
+    private String session;
 }

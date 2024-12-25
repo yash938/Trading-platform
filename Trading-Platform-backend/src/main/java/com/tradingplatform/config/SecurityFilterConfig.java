@@ -47,14 +47,15 @@ public class SecurityFilterConfig {
 
                         configuration.setAllowedOrigins(List.of("*"));
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedMethods(List.of("*"));
-                        configuration.setAllowedHeaders(List.of("*"));
+                        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+
                         configuration.setMaxAge(4000L);
                         return configuration;
                     }
                 }))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/user/**").permitAll()
+                        auth.requestMatchers("/user/**").authenticated()
                                 .requestMatchers("/auth/**").permitAll()
 
                                 .anyRequest().permitAll()

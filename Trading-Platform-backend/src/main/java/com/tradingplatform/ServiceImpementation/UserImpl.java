@@ -1,7 +1,9 @@
 package com.tradingplatform.ServiceImpementation;
 
 import com.tradingplatform.Exception.ResourceNotFound;
+import com.tradingplatform.domain.VerificationType;
 import com.tradingplatform.dto.PageResponse;
+import com.tradingplatform.dto.TwoFactorAuth;
 import com.tradingplatform.dto.UserDto;
 import com.tradingplatform.entity.User;
 import com.tradingplatform.repository.UserRepo;
@@ -74,5 +76,22 @@ public class UserImpl implements UserService {
     public User getByEmail(String email) {
         User user = userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFound("user is not found"));
         return user;
+    }
+
+    @Override
+    public User enableTwoFactorAuth(VerificationType verificationType, String sendTo, User user) {
+        TwoFactorAuth twoFactorAuth = new TwoFactorAuth();
+        twoFactorAuth.setEnabled(true);
+        twoFactorAuth.setSendTo(verificationType);
+
+        user.setTwoFactorAuth(twoFactorAuth);
+        User savedUser = userRepo.save(user);
+        return savedUser;
+    }
+
+    @Override
+    public User updatePassword(User user, String newPassword) {
+        user.setPassword(newPassword);
+      return  userRepo.save(user);
     }
 }

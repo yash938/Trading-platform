@@ -1,10 +1,9 @@
 package com.tradingplatform.controller;
 
-import com.tradingplatform.dto.JwtRequest;
-import com.tradingplatform.dto.JwtResponse;
-import com.tradingplatform.dto.UserDto;
+import com.tradingplatform.dto.*;
 import com.tradingplatform.entity.User;
 import com.tradingplatform.security.JwtHelper;
+import com.tradingplatform.service.RefreshTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -36,6 +32,9 @@ public class AuthController {
     private ModelMapper modelMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest){
@@ -47,12 +46,28 @@ public class AuthController {
 
 
         String token = jwtHelper.generateToken( user);
+        RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
 
 
 
 
-        JwtResponse build = JwtResponse.builder().token(token).user(modelMapper.map(user, UserDto.class)).build();
+        JwtResponse build = JwtResponse.builder().token(token).refreshTokenDto(refreshToken).user(modelMapper.map(user, UserDto.class)).build();
         return ResponseEntity.ok(build);
+    }
+
+
+    @GetMapping("/refreshToken")
+    public ResponseEntity<JwtResponse> generateRefreshToken(@RequestBody RefreshToken refreshToken){
+        RefreshTokenDto byToken = refreshTokenService.findByToken(refreshToken.getRefreshToken());
+        RefreshTokenDto refreshTokenDto = refreshTokenService.verifyToken(byToken);
+
+
+        UserDto user = refreshTokenService.getUser(refreshTokenDto);
+        String s = jwtHelper.generateToken(modelMapper.map(user,User.class));
+
+        JwtResponse build = JwtResponse.builder().token(s).refreshTokenDto(byToken).user(user ).build();
+        return ResponseEntity.ok(build);
+
     }
 
     private void doAuthenticate(String email, String password) {

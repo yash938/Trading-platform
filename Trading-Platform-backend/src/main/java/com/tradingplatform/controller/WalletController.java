@@ -1,10 +1,8 @@
 package com.tradingplatform.controller;
 
-import com.tradingplatform.entity.Order;
-import com.tradingplatform.entity.User;
-import com.tradingplatform.entity.Wallet;
-import com.tradingplatform.entity.WalletTransaction;
+import com.tradingplatform.entity.*;
 import com.tradingplatform.service.OrderService;
+import com.tradingplatform.service.PaymentService;
 import com.tradingplatform.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +22,8 @@ public class WalletController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private PaymentService paymentService;
     @GetMapping("/wallet-api")
     public ResponseEntity<Wallet> getUserWallet(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,6 +52,21 @@ public class WalletController {
         Order orderById = orderService.getOrderById(orderId);
         Wallet wallet = walletService.payOrderPayment(orderById,user);
         return new ResponseEntity<>(wallet,HttpStatus.OK);
+    }
+
+    @PutMapping("/wallet/deposit}")
+    public ResponseEntity<Wallet> addMoneyToWallet(@RequestParam(name = "order_id") int orderId,@RequestParam(name = "payment_id") int paymentId) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Wallet userWallet = walletService.getUserWallet(user);
+        PaymentOrder paymentOrder = paymentService.getPaymentOrder(orderId);
+
+        boolean status = paymentService.proceedPaymentOrder(paymentOrder,paymentId);
+        if(status){
+            userWallet = walletService.addBalanceToWallet(userWallet,paymentOrder.getAmount())
+;        }
+        return new ResponseEntity<>(userWallet,HttpStatus.OK);
     }
 
 

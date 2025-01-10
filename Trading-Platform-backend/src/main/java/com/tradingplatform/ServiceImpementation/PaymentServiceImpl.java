@@ -50,12 +50,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId) throws RazorpayException {
+    public boolean proceedPaymentOrder(PaymentOrder paymentOrder, int paymentId) throws RazorpayException {
         if(paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)){
             if(paymentOrder.getPaymentMethod().equals(PaymentMethod.RAZORPAY)){
                 RazorpayClient razorpayClient = new RazorpayClient(RazorApiKey,razorPaySecretKey);
 
-                Payment payment = razorpayClient.payments.fetch(paymentId);
+                Payment payment = razorpayClient.payments.fetch(String.valueOf(paymentId));
                 Integer amount = payment.get("amount");
                 String status = payment.get("status");
 
@@ -74,6 +74,32 @@ public class PaymentServiceImpl implements PaymentService {
         }
         return false;
     }
+
+//    @Override
+//    public boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId) throws RazorpayException {
+//        if(paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)){
+//            if(paymentOrder.getPaymentMethod().equals(PaymentMethod.RAZORPAY)){
+//                RazorpayClient razorpayClient = new RazorpayClient(RazorApiKey,razorPaySecretKey);
+//
+//                Payment payment = razorpayClient.payments.fetch(paymentId);
+//                Integer amount = payment.get("amount");
+//                String status = payment.get("status");
+//
+//                if(status.equals("captured")){
+//                    paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
+//                    return true;
+//                }
+//
+//                paymentOrder.setStatus(PaymentOrderStatus.FAILED);
+//                paymentRepo.save(paymentOrder);
+//                return false;
+//            }
+//            paymentOrder.setStatus(PaymentOrderStatus.SUCCESS);
+//            paymentRepo.save(paymentOrder);
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Override
     public PaymentResponse createRazorPAyPAymentLink(User user, long amount) throws RazorpayException {

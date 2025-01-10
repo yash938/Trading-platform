@@ -17,7 +17,7 @@ public class OrderItem {
 
     private double quantity;
 
-    @ManyToMany
+   @ManyToOne
     private Coin coin;
 
     private double buyPrice;

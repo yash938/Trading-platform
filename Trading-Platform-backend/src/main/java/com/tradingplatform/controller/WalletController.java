@@ -44,7 +44,7 @@ public class WalletController {
         return new ResponseEntity<>(wallet,HttpStatus.OK);
     }
 
-    @PutMapping("/order{orderId/pay}")
+    @PutMapping("/order{orderId}/pay")
     public ResponseEntity<Wallet> payOrderPayment(@PathVariable int orderId) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -54,7 +54,7 @@ public class WalletController {
         return new ResponseEntity<>(wallet,HttpStatus.OK);
     }
 
-    @PutMapping("/wallet/deposit}")
+    @PutMapping("/wallet/deposit")
     public ResponseEntity<Wallet> addMoneyToWallet(@RequestParam(name = "order_id") int orderId,@RequestParam(name = "payment_id") int paymentId) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();

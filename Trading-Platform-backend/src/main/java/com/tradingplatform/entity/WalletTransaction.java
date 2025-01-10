@@ -18,7 +18,7 @@ public class WalletTransaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @ManyToMany
+    @ManyToOne
     private Wallet wallet;
 
     private WalletTransactionType type;

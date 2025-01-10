@@ -21,8 +21,8 @@ public class WalletServiceImpl implements WalletService {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private OrderService orderService;
+//    @Autowired
+//    private OrderService orderService;
 
     @Override
     public Wallet getUserWallet(User user) {

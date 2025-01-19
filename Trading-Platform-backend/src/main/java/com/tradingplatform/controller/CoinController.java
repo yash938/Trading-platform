@@ -20,15 +20,16 @@ public class CoinController {
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @GetMapping
-    ResponseEntity<List<Coin>> getCoinList(@RequestParam("page") int page) throws Exception {
+    ResponseEntity<List<Coin>> getCoinList(@RequestParam(required = false,name = "page") int page) throws Exception {
         List<Coin> coinList = coinService.getCoinList(page);
         return new ResponseEntity<>(coinList, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{coinId}/chart")
-    ResponseEntity<JsonNode> getMarketChart(@PathVariable String coindId,@RequestParam("days") int days) throws Exception {
-        String marketChart = coinService.getMarketChart(coindId, days);
+    ResponseEntity<JsonNode> getMarketChart(@PathVariable String coinId,@RequestParam("days") int days) throws Exception {
+        String marketChart = coinService.getMarketChart(coinId, days);
         JsonNode jsonNode = objectMapper.readTree(marketChart);
         return new ResponseEntity<>(jsonNode, HttpStatus.ACCEPTED);
     }

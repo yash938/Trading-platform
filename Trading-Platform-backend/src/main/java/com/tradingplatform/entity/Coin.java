@@ -27,18 +27,19 @@ public class Coin {
     private double low24h;
     private double priceChange24h;
     private double priceChangePercentage24h;
-    private double marketCapChange24h;
+    private long marketCapChange24h;
     private double marketCapChangePercentage24h;
     private double circulatingSupply;
     private double totalSupply;
     private double maxSupply;
-    private double ath;  // All Time High
+    private double ath;
     private double athChangePercentage;
     private LocalDateTime athDate;
-    private double atl;  // All Time Low
+    private double atl;
     private double atlChangePercentage;
     private LocalDateTime atlDate;
-    private Double roi;  // Return on Investment
+    @Embedded
+    private Roi roi;
     private LocalDateTime lastUpdated;
 
 }

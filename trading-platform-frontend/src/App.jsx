@@ -5,17 +5,17 @@ import Navbar from './page/Navbar/Navbar'
 import Home from './Home/Home'
 import { Route, Routes } from 'react-router-dom'
 import Portfolio from './page/Portfolio'
-import Activity from './page/Activity/Acivity'
 import Acivity from './page/Activity/Acivity'
 import Wallet from './Wallet/Wallet'
 import WithDrawl from './page/WithDrawl'
-import PaymentDetails from './PaymentDetails/PaymentDetails'
+
 import StockDetails from './page/StockDetails/StockDetails'
 import WatchList from './page/WatcList/WatchList'
 import Profile from './page/Profile/Profile'
 import SearchCoin from './page/SearchCoin/SearchCoin'
 import NotFound from './page/Notfound/NotFound'
 import WithDrawlAdmin from './page/Admin/WithDrawlAdmin'
+import PaymentDetails from './PaymentDetails/PaymentDetails'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,11 +31,11 @@ function App() {
         <Route path='/market/:id' element={<StockDetails/>}/>
         <Route path='/watchlist' element={<WatchList/>}/>
         <Route path='/profile' element={<Profile/>}/>
-        <Route path='/withdrawl' element={<WithDrawl/>}/>
+        <Route path='/withdrawal' element={<WithDrawl/>}/>
         <Route path='/search' element={<SearchCoin/>}/>
         <Route path='*' element={<NotFound/>}/>
         <Route path='/withdrawladmin' element={<WithDrawlAdmin/>}/>
-        <Route path='/paymentDetails' element={<PaymentDetails/>}/>
+        <Route path='/paymentDetail' element={<PaymentDetails/>}/>
       </Routes>
       
     </>

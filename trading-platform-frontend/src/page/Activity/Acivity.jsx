@@ -70,6 +70,7 @@ const Acivity = () => {
                    <TableCell>1321345678651 </TableCell>
                    <TableCell>-0.20009</TableCell> 
                    <TableCell className="text-right">$69249</TableCell>
+                 
                  </TableRow>
                </TableBody>
              </Table>

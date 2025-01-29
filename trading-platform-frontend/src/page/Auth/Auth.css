@@ -1,0 +1,12 @@
+.authContainer{
+    background-image: url("https://cdn.pixabay.com/photo/2023/07/20/05/17/ai-generated-8138379_1280.png");
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.bgBlure{
+        backdrop-filter: blur(10px);
+}
